@@ -78,43 +78,49 @@ const Game = () => {
   }
 
   return (
-    <article className="h-full flex flex-col items-center justify-center gap-6 max-w-md m-auto">
+    <article
+      className="h-full flex flex-col gap-6 max-w-md m-auto"
+      style={{ paddingTop: "0" }}
+    >
       <AttemptsGrid
         hiddenWord={state.hiddenWord}
         attemptWords={state.attemptWords}
       />
-
-      <p className="py-4">
+      <p className="py-4 min-h-24">
         {state.status === Statuses.Initializing
           ? "Initializing..."
           : state.hiddenWordDefinition}
       </p>
 
-      {state.status === Statuses.Won && <p>You won!</p>}
-      {state.status === Statuses.Lost && <p>You lost!</p>}
-      {state.status === Statuses.Playing && (
-        <WordInput
-          hiddenWordLength={state.hiddenWord.length}
-          onWordSubmit={handleWordSubmit}
-        />
+      {[Statuses.Won, Statuses.Lost].includes(state.status) && (
+        <section>
+          <h3>{state.status === Statuses.Won ? "You won!" : "You lost!"}</h3>
+          <p className="text-2xl font-bold">
+            The word was:
+            <br /> {state.hiddenWord}
+          </p>
+        </section>
       )}
-      {state.status !== Statuses.Initializing && (
-        <>
-          <hr className="w-full" />
-          <button
-            type="button"
-            className="w-full text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 border-solid focus:outline-red-300 focus:ring-red-300 font-bold rounded px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 bg-transparent transition"
-            onClick={() => {
-              dispatch({
-                status: Statuses.Initializing,
-                attemptWords: [],
-              });
-            }}
-          >
-            New round
-          </button>
-        </>
-      )}
+
+      <WordInput
+        disabled={state.status !== Statuses.Playing}
+        hiddenWordLength={state.hiddenWord.length}
+        onWordSubmit={handleWordSubmit}
+      />
+      <hr className="w-full" />
+      <button
+        disabled={state.status === Statuses.Initializing}
+        type="button"
+        className="w-full text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 border-solid focus:outline-red-300 focus:ring-red-300 font-bold rounded px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900 bg-transparent disabled:opacity-50 transition"
+        onClick={() => {
+          dispatch({
+            status: Statuses.Initializing,
+            attemptWords: [],
+          });
+        }}
+      >
+        New round
+      </button>
     </article>
   );
 };

@@ -3,17 +3,28 @@ import React from "react";
 type Props = {
   hiddenWordLength: number;
   onWordSubmit: (word: string) => void;
+  disabled: boolean;
 };
 
-const WordInput: React.FC<Props> = ({ onWordSubmit, hiddenWordLength }) => {
+const WordInput: React.FC<Props> = ({
+  disabled,
+  onWordSubmit,
+  hiddenWordLength,
+}) => {
+  const input = React.useRef<HTMLInputElement>(null);
   const form = React.useRef<HTMLFormElement>(null);
+
+  React.useEffect(() => {
+    if (!disabled) {
+      form.current?.reset();
+      input.current?.focus();
+    }
+  }, [disabled]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const data = new FormData(form.current!);
-    const word = data.get("word") as string;
-
+    const word = input.current?.value || "";
     onWordSubmit(word.toUpperCase());
 
     form.current?.reset();
@@ -27,6 +38,7 @@ const WordInput: React.FC<Props> = ({ onWordSubmit, hiddenWordLength }) => {
     >
       <div>
         <input
+          ref={input}
           name="word"
           type="text"
           required
@@ -41,7 +53,8 @@ const WordInput: React.FC<Props> = ({ onWordSubmit, hiddenWordLength }) => {
       </div>
       <div>
         <button
-          className="w-full text-white bg-blue-700 hover:bg-blue-800 border-solid focus:ring-4 focus:ring-blue-300 font-medium rounded px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-blue-300 dark:focus:ring-blue-800"
+          disabled={disabled}
+          className="w-full text-white bg-blue-700 hover:bg-blue-800 border-solid focus:ring-4 focus:ring-blue-300 font-medium rounded px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-blue-300 dark:focus:ring-blue-800 disabled:opacity-50 transition"
           type="submit"
         >
           Submit
