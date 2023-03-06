@@ -3,22 +3,22 @@ import AttemptsGrid from "./AttemptsGrid";
 import WordInput from "./WordInput";
 import wretch from "wretch";
 
-function getRandomWord(): Promise<string> {
-  return wretch(
+type HiddenWord = { word: string; definition: string };
+
+async function getRandomWord(): Promise<HiddenWord> {
+  const word = await wretch(
     "https://random-word-api.vercel.app/api?words=1&type=uppercase&length=8"
   )
     .get()
     .json((json) => json[0]);
-}
 
-function getWordDefinition(word: string): Promise<string> {
   return wretch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
     .get()
-    .json(
-      (json) =>
-        json[0]?.meanings[0]?.definitions[0]?.definition ||
-        "Definition not found"
-    );
+    .json((json) => ({
+      word,
+      definition: json[0]?.meanings[0]?.definitions[0]?.definition,
+    }))
+    .catch(() => ({ word: "", definition: "" }));
 }
 
 const Statuses = {
@@ -52,14 +52,19 @@ const Game = () => {
   React.useEffect(() => {
     if (state.status === Statuses.Initializing) {
       (async () => {
-        const word = await getRandomWord();
-        const definition = await getWordDefinition(word);
+        let attempts = 0;
+        let word: HiddenWord = { word: "", definition: "" };
+
+        while (!word.word && attempts < 3) {
+          word = await getRandomWord();
+          attempts++;
+        }
 
         dispatch({
           status: Statuses.Playing,
           attemptWords: [],
-          hiddenWord: word,
-          hiddenWordDefinition: definition,
+          hiddenWord: word.word,
+          hiddenWordDefinition: word.definition,
         });
       })();
     }

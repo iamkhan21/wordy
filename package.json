@@ -10,7 +10,7 @@
     "update": "nix taze -wI"
   },
   "dependencies": {
-    "framer-motion": "10.0.2",
+    "framer-motion": "10.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "wretch": "2.5.1"
@@ -19,14 +19,14 @@
     "@antfu/ni": "0.20.0",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
-    "@unocss/preset-typography": "0.50.3",
-    "@unocss/preset-uno": "0.50.3",
-    "@unocss/preset-web-fonts": "0.50.3",
+    "@unocss/preset-typography": "0.50.4",
+    "@unocss/preset-uno": "0.50.4",
+    "@unocss/preset-web-fonts": "0.50.4",
     "@vitejs/plugin-react": "3.1.0",
     "prettier": "2.8.4",
     "prettier-plugin-tailwindcss": "0.2.4",
     "typescript": "4.9.5",
-    "unocss": "0.50.3",
+    "unocss": "0.50.4",
     "vite": "4.1.4"
   }
 }
